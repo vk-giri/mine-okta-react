@@ -1,0 +1,5 @@
+# Ignore all "node_modules" directories at any level
+**/node_modules/
+
+**/testenv
+
