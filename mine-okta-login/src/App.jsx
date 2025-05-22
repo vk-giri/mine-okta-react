@@ -23,6 +23,7 @@ import Navbar from './Navbar';
 import Profile from './Profile';
 import CorsErrorModal from './CorsErrorModal';
 import AuthRequiredModal from './AuthRequiredModal';
+import RequiredAuth from './SecureRoute';
 
 const oktaAuth = new OktaAuth(config.oidc);
 
@@ -60,9 +61,12 @@ const App = () => {
         <Routes>
           <Route path='/home' element={<Home />} />
           <Route path='/login/callback' element={<LoginCallback />} />
-          <Route path='/messages' element={<Messages />} />
-          <Route path='/profile' element={<Profile />} />
           <Route path='/' element={<Navigate to='/home' />} />
+
+          <Route path='/protected' element={<RequiredAuth />}>
+            <Route path='/protected/messages' element={<Messages />} />
+            <Route path='/protected/profile' element={<Profile />} />
+          </Route>
         </Routes>
       </Container>
     </Security>
