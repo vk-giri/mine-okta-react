@@ -1,19 +1,7 @@
-/*
- * Copyright (c) 2018-Present, Okta, Inc. and/or its affiliates. All rights reserved.
- * The Okta software accompanied by this notice is provided pursuant to the Apache License, Version 2.0 (the "License.")
- *
- * You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0.
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *
- * See the License for the specific language governing permissions and limitations under the License.
- */
-
 import React from 'react';
-import { Route, useHistory, Switch, Redirect } from 'react-router-dom';
+import { Navigate, Route, Routes, useNavigate } from 'react-router-dom';
 import { OktaAuth, toRelativeUrl } from '@okta/okta-auth-js';
-import { Security, SecureRoute, LoginCallback } from '@okta/okta-react';
+import { Security, LoginCallback } from '@okta/okta-react';
 import { Container } from 'semantic-ui-react';
 import config from './config';
 import Home from './Home';
@@ -23,6 +11,9 @@ import Navbar from './Navbar';
 import Profile from './Profile';
 import CorsErrorModal from './CorsErrorModal';
 import AuthRequiredModal from './AuthRequiredModal';
+import RequiredAuth from './SecureRoute';
+import Loading from './Loading';
+import MyCustomLoginCallback from './MyCustomLoginCallback';
 
 const oktaAuth = new OktaAuth(config.oidc);
 
@@ -30,15 +21,14 @@ const App = () => {
   const [corsErrorModalOpen, setCorsErrorModalOpen] = React.useState(false);
   const [authRequiredModalOpen, setAuthRequiredModalOpen] = React.useState(false);
 
-  const history = useHistory(); // example from react-router
+  const navigate = useNavigate();
 
   const triggerLogin = async () => {
     await oktaAuth.signInWithRedirect();
   };
 
   const restoreOriginalUri = async (_oktaAuth, originalUri) => {
-    history.replace(toRelativeUrl(originalUri || '/', window.location.origin));
-    // history.replace(toRelativeUrl(originalUri || '/home', window.location.origin));
+    navigate(toRelativeUrl(originalUri || '/', window.location.origin), { replace: true });
   };
 
   const customAuthHandler = async () => {
@@ -58,13 +48,17 @@ const App = () => {
       <CorsErrorModal {...{ corsErrorModalOpen, setCorsErrorModalOpen }} />
       <AuthRequiredModal {...{ authRequiredModalOpen, setAuthRequiredModalOpen, triggerLogin }} />
       <Container text style={{ marginTop: '7em' }}>
-        <Switch>
-          <Route path='/home' component={Home} />
-          <Route path='/login/callback' component={LoginCallback} />
-          <SecureRoute path='/messages' component={Messages} />
-          <SecureRoute path='/profile' component={Profile} />
-          <Route path="/" render={() => (<Redirect to="/home" />)} />
-        </Switch>
+        <Routes>
+          <Route path='/home' element={<Home />} />
+          {/* <Route path='/login/callback' element={<LoginCallback />} /> */}
+          <Route path='/login/callback' element={<MyCustomLoginCallback homePath='/home' loadingElement={<Loading />} />} />
+          <Route path='/' element={<Navigate to='/home' />} />
+
+          <Route path='/protected' element={<RequiredAuth />}>
+            <Route path='/protected/messages' element={<Messages />} />
+            <Route path='/protected/profile' element={<Profile />} />
+          </Route>
+        </Routes>
       </Container>
     </Security>
   );
