@@ -11,9 +11,9 @@
  */
 
 import React from 'react';
-import { Route, useHistory, Switch, Redirect } from 'react-router-dom';
+import { Navigate, Route, Routes, useNavigate } from 'react-router-dom';
 import { OktaAuth, toRelativeUrl } from '@okta/okta-auth-js';
-import { Security, SecureRoute, LoginCallback } from '@okta/okta-react';
+import { Security, LoginCallback } from '@okta/okta-react';
 import { Container } from 'semantic-ui-react';
 import config from './config';
 import Home from './Home';
@@ -30,15 +30,14 @@ const App = () => {
   const [corsErrorModalOpen, setCorsErrorModalOpen] = React.useState(false);
   const [authRequiredModalOpen, setAuthRequiredModalOpen] = React.useState(false);
 
-  const history = useHistory(); // example from react-router
+  const navigate = useNavigate();
 
   const triggerLogin = async () => {
     await oktaAuth.signInWithRedirect();
   };
 
   const restoreOriginalUri = async (_oktaAuth, originalUri) => {
-    history.replace(toRelativeUrl(originalUri || '/', window.location.origin));
-    // history.replace(toRelativeUrl(originalUri || '/home', window.location.origin));
+    navigate(toRelativeUrl(originalUri || '/', window.location.origin), { replace: true });
   };
 
   const customAuthHandler = async () => {
@@ -58,13 +57,13 @@ const App = () => {
       <CorsErrorModal {...{ corsErrorModalOpen, setCorsErrorModalOpen }} />
       <AuthRequiredModal {...{ authRequiredModalOpen, setAuthRequiredModalOpen, triggerLogin }} />
       <Container text style={{ marginTop: '7em' }}>
-        <Switch>
-          <Route path='/home' component={Home} />
-          <Route path='/login/callback' component={LoginCallback} />
-          <SecureRoute path='/messages' component={Messages} />
-          <SecureRoute path='/profile' component={Profile} />
-          <Route path="/" render={() => (<Redirect to="/home" />)} />
-        </Switch>
+        <Routes>
+          <Route path='/home' element={<Home />} />
+          <Route path='/login/callback' element={<LoginCallback />} />
+          <Route path='/messages' element={<Messages />} />
+          <Route path='/profile' element={<Profile />} />
+          <Route path='/' element={<Navigate to='/home' />} />
+        </Routes>
       </Container>
     </Security>
   );

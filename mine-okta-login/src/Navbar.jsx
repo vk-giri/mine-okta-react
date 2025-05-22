@@ -12,23 +12,23 @@
 
 import { useOktaAuth } from '@okta/okta-react';
 import React from 'react';
-import { useHistory, Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { Container, Icon, Image, Menu } from 'semantic-ui-react';
 import logo from './logo.svg';
 
 const Navbar = ({ setCorsErrorModalOpen }) => {
-  const history = useHistory();
+  const location = useLocation();
   const { authState, oktaAuth } = useOktaAuth();
 
   // Note: Can't distinguish CORS error from other network errors
   const isCorsError = (err) => err.name === 'AuthApiError' && !err.errorCode && err.xhr.message === 'Failed to fetch';
 
   const login = async () => {
-    // oktaAuth.signInWithRedirect();
+    oktaAuth.signInWithRedirect();
   };
 
   const logout = async () => {
-    const basename = window.location.origin + history.createHref({ pathname: '/' });
+    const basename = window.location.origin + '/';
     
     try {
       await oktaAuth.signOut({ postLogoutRedirectUri: basename });
@@ -72,8 +72,6 @@ const Navbar = ({ setCorsErrorModalOpen }) => {
               Logout
             </Menu.Item>
           )}
-          {/* removing the Login button from the Navbar */}
-          {/* {!authState.isPending && !authState.isAuthenticated && <Menu.Item onClick={login}>Login</Menu.Item>} */}
         </Container>
       </Menu>
     </div>
