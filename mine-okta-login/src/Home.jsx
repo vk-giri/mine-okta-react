@@ -48,7 +48,7 @@ const Home = () => {
   return (
     <div id='home'>
       <div>
-        <Header as='h1'>PKCE Flow w/ Okta Hosted Login Page</Header>
+        <Header as='h1'>Login Flow w/ Okta Hosted Login Page</Header>
 
         {showLoader ? (
           <p textAlign='center' margin-top='250px'>
