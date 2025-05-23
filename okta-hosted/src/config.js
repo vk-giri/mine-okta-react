@@ -23,6 +23,7 @@ export default {
       },
     },
     pkce: true,
+    // pkce: false, // triggers a implicit flow
     features: {
       registration:true,
       router: true,
