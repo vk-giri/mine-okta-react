@@ -14,6 +14,7 @@ import AuthRequiredModal from './AuthRequiredModal';
 import RequiredAuth from './SecureRoute';
 import Loading from './Loading';
 import MyCustomLoginCallback from './MyCustomLoginCallback';
+import Test from './Test';
 
 const oktaAuth = new OktaAuth(config.oidc);
 
@@ -50,7 +51,6 @@ const App = () => {
       <Container text style={{ marginTop: '7em' }}>
         <Routes>
           <Route path='/home' element={<Home />} />
-          {/* <Route path='/login/callback' element={<LoginCallback />} /> */}
           <Route path='/login/callback' element={<MyCustomLoginCallback homePath='/home' loadingElement={<Loading />} />} />
           <Route path='/' element={<Navigate to='/home' />} />
 
