@@ -1,35 +1,56 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from 'react';
+import { OktaAuth } from '@okta/okta-auth-js';
+import { Security } from '@okta/okta-react';
+import { useNavigate, Routes, Route } from 'react-router-dom';
+import { Container } from 'semantic-ui-react';
+
+import config from './config';
+import Login from './Login';
+import Home from './Home';
+
+const oktaAuth = new OktaAuth(config.oidc);
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [corsErrorModalOpen, setCorsErrorModalOpen] = useState(false);
+  const [authRequiredModalOpen, setAuthRequiredModalOpen] = useState(false);
+
+  const navigate = useNavigate();
+
+  const goToLoginPage = () => {
+    navigate('/login');
+  };
+
+  // This is triggered when a SecureRoute is accessed without authentication.
+  const customAuthHandler = async () => {
+    const previousAuthState = oktaAuth.authStateManager.getPreviousAuthState();
+
+    console.log('Previous Auth State ', previousAuthState);
+
+    if (!previousAuthState || !previousAuthState.isAuthenticated) {
+      goToLoginPage();
+    } else {
+      // Ask the user to trigger the login process during token autoRenew process
+      setAuthRequiredModalOpen(true);
+    }
+  };
+
+  const restoreOriginalUri = async (_oktaAuth, originalUri) => {
+    navigate(toRelativeUrl(originalUri || '/', window.location.origin), { replace: true });
+  };
 
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <Security oktaAuth={oktaAuth} onAuthRequired={customAuthHandler} restoreOriginalUri={restoreOriginalUri}>
+        <Container text style={{ marginTop: '7em' }}>
+          <Routes>
+            <Route path='/login' element={<Login />} />
+            <Route path='/home' element={<Home />} />
+
+          </Routes>
+        </Container>
+      </Security>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
