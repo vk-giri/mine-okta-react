@@ -13,7 +13,7 @@ const Home = () => {
     <>
       <h1>Embedded Widget</h1>
       <Button variant='primary' onClick={loginHandler}>
-        Primary
+        Login
       </Button>
     </>
   );

@@ -1,5 +1,5 @@
-const CLIENT_ID = import.meta.env.CLIENT_ID || '{clientId}';
-const ISSUER = import.meta.env.ISSUER || 'https://{yourOktaDomain}.com/oauth2/default';
+const CLIENT_ID = import.meta.env.VITE_CLIENT_ID || '{clientId}';
+const ISSUER = import.meta.env.VITE_ISSUER || 'https://{yourOktaDomain}.com/oauth2/default';
 const OKTA_TESTING_DISABLEHTTPSCHECK = import.meta.env.OKTA_TESTING_DISABLEHTTPSCHECK || false;
 const BASENAME = import.meta.env.BASE_URL || '';
 const REDIRECT_URI = `${window.location.origin}${BASENAME}login/callback`;

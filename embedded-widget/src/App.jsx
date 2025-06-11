@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { OktaAuth } from '@okta/okta-auth-js';
 import { Security } from '@okta/okta-react';
-import { useNavigate, Routes, Route } from 'react-router-dom';
+import { useNavigate, Routes, Route, Navigate } from 'react-router-dom';
 import { Container } from 'react-bootstrap';
 
 import config from './config';
@@ -43,6 +43,7 @@ function App() {
       <Security oktaAuth={oktaAuth} onAuthRequired={customAuthHandler} restoreOriginalUri={restoreOriginalUri}>
         <Container style={{ marginTop: '7em' }}>
           <Routes>
+            <Route path='/' element={<Navigate to='/home' />} />
             <Route path='/login' element={<Login />} />
             <Route path='/home' element={<Home />} />
           </Routes>
