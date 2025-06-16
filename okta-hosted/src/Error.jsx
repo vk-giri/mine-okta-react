@@ -1,7 +1,7 @@
 import React from 'react';
 
-const ErrorReporter = ({ error }) => {
+const Error = ({ error }) => {
   return <>{error.name} : {error.message}</>;
 };
 
-export default ErrorReporter;
+export default Error;

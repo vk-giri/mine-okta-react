@@ -2,11 +2,11 @@ import { useNavigate } from 'react-router-dom';
 import { useOktaAuth } from '@okta/okta-react';
 import { useEffect, useState } from 'react';
 
-import ErrorReporter from './ErrorReporter';
+import Error from './Error';
 
 const MyCustomLoginCallback = ({ homePath, loadingElement }) => {
   const [callbackError, setCallbackError] = useState(null);
-  const { oktaAuth } = useOktaAuth();
+  const { oktaAuth, authState } = useOktaAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -37,11 +37,10 @@ const MyCustomLoginCallback = ({ homePath, loadingElement }) => {
 
   // add support for auth state error
   // const displayError = callbackError || authState?.error
-
   const displayError = callbackError;
 
   if (displayError) {
-    return <ErrorReporter error={displayError} />;
+    return <Error error={displayError} />;
   }
 
   return loadingElement;
