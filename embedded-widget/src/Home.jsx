@@ -10,6 +10,8 @@ const Home = () => {
 
   const { authState, oktaAuth } = useOktaAuth();
 
+  // authstate -> id, access, refresh tokens and isAuthenticated
+
   const loginHandler = async () => {
     navigate('/login');
   };
