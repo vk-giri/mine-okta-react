@@ -33,8 +33,8 @@ const Login = () => {
       .showSignIn({ el: widgetRef.current })
       // Handle a redirect to the configured redirectUri that happens on the end of login flow, enroll authenticator flow or on an error.
       .then((res) => {
-        // console.log(res); // res -> status and tokens
-        oktaAuth.handleRedirect(res.tokens);
+        console.log(res); // res -> status and tokens
+        oktaAuth.handleLoginRedirect(res.tokens);
       })
       .catch((err) => {
         console.log('login error', err);

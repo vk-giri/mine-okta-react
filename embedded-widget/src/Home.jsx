@@ -1,12 +1,28 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { useOktaAuth } from '@okta/okta-react';
+
+import { useHref, useNavigate } from 'react-router-dom';
 import { Button } from 'react-bootstrap';
 
 const Home = () => {
   const navigate = useNavigate();
+  const relativeHref = useHref('/');
+
+  const { authState, oktaAuth } = useOktaAuth();
 
   const loginHandler = async () => {
     navigate('/login');
+  };
+
+  const logoutHandler = async () => {
+    const basename = window.location.origin + relativeHref;
+
+    try {
+      await oktaAuth.signOut({ postLogoutRedirectUri: basename });
+    } catch (err) {
+      console.log(err);
+      throw err;
+    }
   };
 
   return (
@@ -15,6 +31,11 @@ const Home = () => {
       <Button variant='primary' onClick={loginHandler}>
         Login
       </Button>
+      {authState?.isAuthenticated && (
+        <Button variant='primary' onClick={logoutHandler}>
+          Logout
+        </Button>
+      )}
     </>
   );
 };

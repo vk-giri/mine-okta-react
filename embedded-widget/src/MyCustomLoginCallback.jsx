@@ -1,12 +1,9 @@
 import { useNavigate } from 'react-router-dom';
 import { useOktaAuth } from '@okta/okta-react';
-import { useEffect, useState } from 'react';
-
-import Error from './Error';
+import { useEffect } from 'react';
 
 const MyCustomLoginCallback = ({ homePath, loadingElement }) => {
-  const [callbackError, setCallbackError] = useState(null);
-  const { oktaAuth, authState } = useOktaAuth();
+  const { oktaAuth } = useOktaAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -22,26 +19,18 @@ const MyCustomLoginCallback = ({ homePath, loadingElement }) => {
           if (!redirectUri) {
             // manual redirect when redirectUri is not set
             // otherwise allow default behavior
+            console.log("here")
             navigate(homePath, { replace: true });
           }
         })
         .catch((e) => {
-          setCallbackError(e);
-          // console.error(e);
+          console.error(e);
         });
     } else {
       // we landed on root path, but do not have login callback params in url query string
       navigate(homePath, { replace: true });
     }
   }, [oktaAuth, navigate, homePath]);
-
-  // add support for auth state error if you find any
-  // const displayError = callbackError || authState?.error
-  const displayError = callbackError;
-
-  if (displayError) {
-    return <Error error={displayError} />;
-  }
 
   return loadingElement;
 };

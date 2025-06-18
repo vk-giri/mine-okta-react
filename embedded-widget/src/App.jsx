@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { OktaAuth } from '@okta/okta-auth-js';
+import { OktaAuth, toRelativeUrl } from '@okta/okta-auth-js';
 import { Security } from '@okta/okta-react';
 import { useNavigate, Routes, Route, Navigate } from 'react-router-dom';
 import { Container } from 'react-bootstrap';
@@ -44,8 +44,8 @@ function App() {
         <Container style={{ marginTop: '7em' }}>
           <Routes>
             <Route path='/' element={<Navigate to='/home' />} />
-            <Route path='/login' element={<Login />} />
             <Route path='/home' element={<Home />} />
+            <Route path='/login' element={<Login />} />
           </Routes>
         </Container>
       </Security>
