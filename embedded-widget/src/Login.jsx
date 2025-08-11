@@ -53,6 +53,14 @@ const Login = () => {
         throw err;
       });
 
+    widget.on('afterError', (context, error) => {
+      // console.log(error);
+    });
+
+    widget.on('afterRender', (context) => {
+      // console.log(context);
+    });
+
     return () => {
       // Remove the widget from the DOM entirely.
       widget.remove();

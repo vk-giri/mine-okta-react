@@ -7,6 +7,7 @@ import { Button } from 'react-bootstrap';
 const Home = () => {
   const navigate = useNavigate();
   const relativeHref = useHref('/');
+  const [userInfo, setUserInfo] = useState(null);
 
   const { authState, oktaAuth } = useOktaAuth();
 
@@ -27,13 +28,46 @@ const Home = () => {
     }
   };
 
+  useEffect(() => {
+    if (!authState || !authState.isAuthenticated) {
+      // When user isn't authenticated, forget any user info
+      setUserInfo(null);
+    } else {
+      oktaAuth
+        .getUser()
+        .then((info) => {
+          setUserInfo(info);
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    }
+  }, [authState, oktaAuth]);
+
+  if (!authState) {
+    return <div>Loading...</div>;
+  }
   return (
     <>
       <h1>Embedded Widget</h1>
-      <Button variant='primary' onClick={loginHandler}>
-        Login
-      </Button>
-      {authState?.isAuthenticated && (
+
+      {!authState.isAuthenticated && (
+        <>
+          <p>Please Login to the app</p>
+          <Button id='login-button' variant='primary' onClick={loginHandler}>
+            Login
+          </Button>
+        </>
+      )}
+
+      {authState.isAuthenticated && userInfo && (
+        <p id='welcome'>
+          Welcome, &nbsp;
+          {userInfo.name}!
+        </p>
+      )}
+
+      {authState.isAuthenticated && (
         <Button variant='primary' onClick={logoutHandler}>
           Logout
         </Button>
