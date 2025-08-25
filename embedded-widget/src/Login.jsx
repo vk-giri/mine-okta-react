@@ -28,6 +28,10 @@ const Login = () => {
         issuer,
         scopes,
       },
+      features:{
+        multiOptionalFactorEnroll: true,
+        showPasswordToggleOnSignInPage: true
+      },
       useClassicEngine: useClassicEngine,
     });
 
